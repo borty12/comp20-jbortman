@@ -9,3 +9,8 @@ body{
 	text-align: center;
 	background-color: #42bcf4;
 }
+
+.video{
+	height: 400px;
+	width: 500px;
+}
