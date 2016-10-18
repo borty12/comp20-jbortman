@@ -1,8 +1,7 @@
 var map;
 var parsedData;
-var myLocation
-var stationMarkers
-
+var myLocation, map;
+var stationMarkers;
 
 // Making the different stops into objects
  var southStation = {stop_name: "South Station", stop_lat: 42.352271, stop_long: -71.05524200000001};
@@ -30,14 +29,13 @@ var stationMarkers
 
 //Map Initiation
 function initMap(){
-	var myLocation = new google.maps.LatLng(0,0);
-	var MapSettings = {
+	 myLocation = new google.maps.LatLng(45,-75);
+	 MapSettings = {
 		center: myLocation,
 		zoom: 12,
-		mapTypeId: google.maps.MapTypeID.ROADMAP
 	};
 	map = new google.maps.Map(document.getElementById('map'), MapSettings);
-	map.panTo(myLocation)
+	map.panTo(myLocation);
 }
 
 // Finding my location on the map
@@ -73,16 +71,16 @@ function markerMaker(markerposition, markertitle, markericon){
 		title: markertitle,
 		icon: markericon,
 	})
-	return marker 
+	return marker
 
-	//Info windows 
+	//Info windows
 var infowindow = new google.maps.InfoWindow();
 
 google.maps.event.addListener(marker, 'click', function(){
 	infowindow.setContent(marker.title);
 	infowindow.open(map, marker);
 });
-	
+
 }
 
 
@@ -99,18 +97,18 @@ google.maps.event.addListener(marker, 'click', function(){
 
 
 
-// function funex(){
-// 	console.log("called funex" + request.readyState);
-// 	if (request.readyState == 4 && request.status == 200){
-// 		theData=request.responseText;
-// 		funex = JSON.parse(theData);
-// 		newHTML = "";
-// 		section = document.getElementById("map");
+function funex(){
+	console.log("called funex" + request.readyState);
+	if (request.readyState == 4 && request.status == 200){
+		theData=request.responseText;
+		funex = JSON.parse(theData);
+		newHTML = "";
+		section = document.getElementById("map");
 
-// 	}
-// }
+	}
+}
 
-// map = new google.maps.Map(document.getElementById('map'), {
-//   center: {lat: -34.397, lng: 150.644},
-//   zoom: 12
-// });
+map = new google.maps.Map(document.getElementById('map'), {
+  center: {lat: -34.397, lng: 150.644},
+  zoom: 12
+});
