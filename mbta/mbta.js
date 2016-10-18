@@ -1,32 +1,7 @@
 var map;
 var parsedData;
-
-//Map Initiation
-function initMap(){
-	var myLocation = new google.maps.LatLng(0,0);
-	var MapSettings = {
-		center: myLocation,
-		zoom: 12,
-		mapTypeId: google.maps.MapTypeID.ROADMAP
-	};
-	map = new google.maps.Map(document.getElementById('map'), MapSettings);
-	map.panTo(myLocation)
-
-// Finding my location on the map
-
-function userlocation(){
-	if (navigator.geolocation){
-		navigator.geolocation.getCurrentPosition()
-	}
-}
-
-
-//Get JSON data into my map
-	request = new XMLHttpRequest();
-	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
-	request.onreadystatechange = funex;
-	request.send();
-}
+var myLocation
+var stationMarkers
 
 // Making the different stops into objects
  var southStation = {stop_name: "South Station", stop_lat: 42.352271, stop_long: -71.05524200000001};
@@ -52,18 +27,74 @@ function userlocation(){
  var central = {stop_name: "Central Square", stop_lat: 42.365486, stop_long: -71.103802};
  var braintree = {stop_name: "Braintree", stop_lat: 42.2078543, stop_long: -71.0011385};
 
-function funex(){
-	console.log("called funex" + request.readyState);
-	if (request.readyState == 4 && request.status == 200){
-		theData=request.responseText;
-		funex = JSON.parse(theData);
-		newHTML = "";
-		section = document.getElementById("map");
+//Map Initiation
+function initMap(){
+	var myLocation = new google.maps.LatLng(0,0);
+	var MapSettings = {
+		center: myLocation,
+		zoom: 12,
+		mapTypeId: google.maps.MapTypeID.ROADMAP
+	};
+	map = new google.maps.Map(document.getElementById('map'), MapSettings);
+	map.panTo(myLocation)
+}
 
+// Finding my location on the map
+
+function userlocation(){
+	if (navigator.geolocation){
+		navigator.geolocation.getCurrentPosition(function(position){
+			userlat = position.coords.latitude;
+			userlong = position.coords.longitude;
+		}) 
+	}
+	else {
+		alert("Geolocation not supported, try another browser");
 	}
 }
 
-map = new google.maps.Map(document.getElementById('map'), {
-  center: {lat: -34.397, lng: 150.644},
-  zoom: 12
-});
+
+//Center map on my location
+
+function getmap(){
+	userlocation = new.google.maps.LatLng(userLat, userLong);
+	map.panto(userlocation)
+
+	userMarker = markerMaker(userlocation, "You are here", url: "you_are_here")
+}
+
+//Marker for my location
+
+function markerMaker(markerposition, markertitle, markericon){
+	let marker = new.google.maps.Marker({
+		position: markerposition,
+		title: markertitle,
+		icon: markericon,
+	})
+	return marker 
+}
+
+//Get JSON data into my map
+	request = new XMLHttpRequest();
+	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
+	request.onreadystatechange = funex;
+	request.send();
+}
+
+
+
+// function funex(){
+// 	console.log("called funex" + request.readyState);
+// 	if (request.readyState == 4 && request.status == 200){
+// 		theData=request.responseText;
+// 		funex = JSON.parse(theData);
+// 		newHTML = "";
+// 		section = document.getElementById("map");
+
+// 	}
+// }
+
+// map = new google.maps.Map(document.getElementById('map'), {
+//   center: {lat: -34.397, lng: 150.644},
+//   zoom: 12
+// });
