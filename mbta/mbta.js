@@ -180,4 +180,92 @@ function makeNearestString(stopList){
 	return nextTrains;
 }
 
-//
+//Train Station Polylines
+function addPolylines(){
+	let line1 = getCoords(main);
+	part1 = new google.maps.Polyline({
+		path: line1,
+		strokeColor: '#ff0000',
+		strokeOpacity: 1.0,
+		strokeWeight: 2.75,
+	});
+
+	part1.setMap(map);
+
+	let line2 = getCoords(forkright);
+	part2 = new google.maps.Polyline({
+		path: line2,
+		strokeColor: '#ff0000',
+		strokeOpacity: 1.0,
+		strokeWeight: 2.75,
+	});
+
+	part2.setMap(map);
+
+//Draw Polylines
+	myLine = new google.maps.Polyline({
+		line: [{lat:myLat, lng:myLong}, {lat: closestStop.stop_lat, lng:closestStop.stop_long}],
+		strokeColor: '#000000'
+		strokeOpacity: 1.0,
+		strokeWeight: 2.75,
+	});
+
+	myPath.setMap(map);
+}
+
+//Haversine Function - from Stack Overflow
+function findNearest(){
+	coords1 = [myLong, myLat];
+	tStops.forEach(function(stop,index){
+		let coords2 = [stop.stop_long, stop.stop_lat];
+		let stopDist = haversineDistance(coords1, coords2, true);
+		if (index == 0){
+		closestDist = stopDist;
+		}
+		if (stopDist<closestDist){
+			closestDist = stopDist;
+			closestStop = stop;
+		}
+	});
+
+function haversineDistance(coords1,coords2,isMiles){
+	Number.prototype.toRad=function(){
+		return this*Math.PI/180;
+	}
+
+	var lat2 = coords2[1];
+	var lon2 = coords2 [0];
+	var lat1 = coords1 [1];
+	var lon1 = coords1[0];
+//Distance in km
+	var R=6371;
+
+	var x1 = lat2-lat1;
+  	var dLat = x1.toRad();
+  	var x2 = lon2-lon1;
+  	var dLon = x2.toRad();
+  	var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+       	Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+  	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+ 	var d = R * c * 1.60934;
+
+  return d;
+}
+
+}
+}
+
+//Info Window Content
+let closestInfo="<div class=infoWindow"+
+"Closest Stop is:"+"<span class=important>"+
+closestDist.toFixed(3)+
+"</span>"+
+"path"+
+"</div>";
+var infowindow = new google.maps.InfoWindow();
+google.maps.event.addListener(personMarker, 'click', function(){
+	infowindow.setContent(closestInfo);
+	infowindow.open(map,personMarker);
+});
+
