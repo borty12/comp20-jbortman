@@ -3,6 +3,7 @@ var parsedData;
 var myLocation
 var stationMarkers
 
+
 // Making the different stops into objects
  var southStation = {stop_name: "South Station", stop_lat: 42.352271, stop_long: -71.05524200000001};
  var andrew = {stop_name: "Andrew", stop_lat: 42.330154, stop_long: -71.057655};
@@ -46,10 +47,11 @@ function userlocation(){
 		navigator.geolocation.getCurrentPosition(function(position){
 			userlat = position.coords.latitude;
 			userlong = position.coords.longitude;
-		}) 
+			getMap();
+		});
 	}
 	else {
-		alert("Geolocation not supported, try another browser");
+		alert("Geolocation is not supported by your web browser. What a shame!");
 	}
 }
 
@@ -72,9 +74,23 @@ function markerMaker(markerposition, markertitle, markericon){
 		icon: markericon,
 	})
 	return marker 
+
+	//Info windows 
+var infowindow = new google.maps.InfoWindow();
+
+google.maps.event.addListener(marker, 'click', function(){
+	infowindow.setContent(marker.title);
+	infowindow.open(map, marker);
+});
+	
 }
 
+
+
+
 //Get JSON data into my map
+	function loadStopTimes(){
+
 	request = new XMLHttpRequest();
 	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
 	request.onreadystatechange = funex;
