@@ -60,6 +60,7 @@ function getMap(){
 	map.panTo(userlocation);
 
 	userMarker = markerMaker(userlocation, "You are here",{url: "you_are_here.png"})
+	scaledSize: new google.maps.Size(50,50),
 }
 
 //Marker for my location
@@ -71,20 +72,49 @@ function markerMaker(markerposition, markertitle, markericon){
 	});
 
   marker.setMap(map);
+  findNearest();
 
-	//Info windows
+//Info windows
 var infowindow = new google.maps.InfoWindow();
 
-google.maps.event.addListener(marker, 'click', function(){
-	infowindow.setContent(marker.title);
-	infowindow.open(map, marker);
+google.maps.event.addListener(stationMarker, 'click', function(){
+	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
+	request.send();
 });
 
 return marker;
+
+//Only add data if downloaded
+let windowContent = "<h1>" + stop.stop_name + ":" + "</h1>"; 
+       if(dataWasParsed) {
+         windowContent += "\ " + setUpJSONInfo(stop.stop_name);
+       } else {
+         windowContent += "Oops! Data unavailable. Try back later!";
+       }
+
+       infowindow.setContent(windowContent);
+       infowindow.open(map,stopMarker);
+     };
+  };
+ }
+
 }
 
 //
-//
+//Getting T-Stops on the map
+let stationIcon = {
+	url: "station_icon.png",
+	scaledSie: new google.maps.Size(30,30),
+}
+
+stations.forEach((station) function(){
+	let stopLocation = new google.maps.LatLng(stop.stop_lat, stop.stop_long);
+	stationMarker = markerMaker(stoplocation, stop.stop_name,{stationIcon})
+});
+
+stationMarker.setMap(map);
+allStationMarkers.push(stationMarker);
+
 //
 //
 // //Get JSON data into my map
@@ -99,17 +129,55 @@ return marker;
 //
 //
 // function funex(){
-// 	console.log("called funex" + request.readyState);
 // 	if (request.readyState == 4 && request.status == 200){
 // 		theData=request.responseText;
 // 		funex = JSON.parse(theData);
-// 		newHTML = "";
+// 		dataWasParsed = true; 
 // 		section = document.getElementById("map");
 //
 // 	}
+	else{
+		dataWasParsed = false;
+      	console.clear();
+     	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
+        request.send(); 
+
+	}
 // }
 
 // map = new google.maps.Map(document.getElementById('map'), {
 //   center: {lat: -34.397, lng: 150.644},
 //   zoom: 12
 // });
+
+//Next train schedule
+
+function JSONInfo(stopName){
+	let stopList=[]
+	parsedData.TripList.Trips.forEach((destinations) function(){
+		destinations.Predictions.forEach(function(prediction){
+			if (prediction.Stop==stopName){
+				stopList.push(prediction.Seconds);
+			}
+		});
+	});
+	return makeNearestString(stopList);
+}
+
+
+//Array to string conversion
+function makeNearestString(stopList){
+	//This was taken from W3schools api
+	stopList.sort((a,b) function(){return a-b});
+	let nextTrains = "<h2>Next Arrival (Minutes)</h2>";
+	if(stopList.length==0) nextTrains="No Arrivals Expected at this Stop";
+	stopList.forEach(function(time){
+		if(time>0 && time<60){
+			let timeInMinutes=(time/60).toFixed(2);
+			nextTrains+=""+timeInMinutes.toString();
+		}
+	});
+	return nextTrains;
+}
+
+//
