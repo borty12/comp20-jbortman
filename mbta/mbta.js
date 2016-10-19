@@ -46,6 +46,7 @@ function initMap(){
 
   //request.onreadystatechange=parseHelp;
   userlocation();
+  loadStopTimes();
 }
 
 // Finding my location on the map
@@ -122,34 +123,6 @@ function getStationsOnMap(){
 //        infowindow.setContent(windowContent);
 //        infowindow.open(map,stopMarker);
 
-// //
-// // //Get JSON data into my map
-// // 	function loadStopTimes(){
-// //
-// // 	request = new XMLHttpRequest();
-// // 	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
-// // 	request.onreadystatechange = funex;
-// // 	request.send();
-// // }
-// //
-// //
-// //
-// // function funex(){
-// // 	if (request.readyState == 4 && request.status == 200){
-// // 		theData=request.responseText;
-// // 		funex = JSON.parse(theData);
-// // 		dataWasParsed = true;
-// // 		section = document.getElementById("map");
-// //
-// // 	}
-// 	else{
-// 		dataWasParsed = false;
-//       	console.clear();
-//      	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
-//         request.send();
-//
-// 	}
-// // }
 //
 // // map = new google.maps.Map(document.getElementById('map'), {
 // //   center: {lat: -34.397, lng: 150.644},
@@ -295,6 +268,24 @@ function haversineDistance(coords1,coords2,isMiles){
   return d;
 }
 
+//Get JSON data into my map
+	function loadStopTimes(){
+
+	request = new XMLHttpRequest();
+	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
+	request.onreadystatechange = funex;
+	request.send();
+}
+
+function funex(){
+	if (request.readyState == 4 && request.status == 200){
+		theData=request.responseText;
+		trainSchedule = JSON.parse(theData);
+	} else if (request.readyState == 4){
+     	  request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
+        request.send();
+	}
+}
 //
 // //Info Window Content
 // let closestInfo="<div class=infoWindow"+
