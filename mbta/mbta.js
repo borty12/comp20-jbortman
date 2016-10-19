@@ -1,7 +1,8 @@
 var map;
 var parsedData;
-var myLocation, map;
+var userLocation, map;
 var stationMarkers;
+var stations;
 
 // Making the different stops into objects
  var southStation = {stop_name: "South Station", stop_lat: 42.352271, stop_long: -71.05524200000001};
@@ -27,16 +28,23 @@ var stationMarkers;
  var central = {stop_name: "Central Square", stop_lat: 42.365486, stop_long: -71.103802};
  var braintree = {stop_name: "Braintree", stop_lat: 42.2078543, stop_long: -71.0011385};
 
+//Stations Array
+stations= [southStation, andrew, porterSquare, harvardSquare, jfk, savinHill, parkStreet, broadway,
+ northQuincy, shawmut, davis, alewife, mit, mgh, crossing, quincyCenter, quincyAdams, ashmont, wollaston,
+ fields, central, braintree];
+
+
 //Map Initiation
 function initMap(){
-	 myLocation = new google.maps.LatLng(45,-75);
+	 userLocation = new google.maps.LatLng(45,-75);
 	 MapSettings = {
-		center: myLocation,
+		center: userLocation,
 		zoom: 12,
 	};
 	map = new google.maps.Map(document.getElementById('map'), MapSettings);
-	map.panTo(myLocation);
+	map.panTo(userLocation);
 
+  //request.onreadystatechange=parseHelp;
   userlocation();
 }
 
@@ -59,8 +67,9 @@ function getMap(){
 	userlocation = new google.maps.LatLng(userLat, userLong);
 	map.panTo(userlocation);
 
-	userMarker = markerMaker(userlocation, "You are here",{url: "you_are_here.png"})
-	scaledSize: new google.maps.Size(50,50),
+	userMarker = markerMaker(userlocation, "You are here",{url: "you_are_here.png", scaledSize: new google.maps.Size(50,50)});
+
+  getStationsOnMap();
 }
 
 //Marker for my location
@@ -72,171 +81,204 @@ function markerMaker(markerposition, markertitle, markericon){
 	});
 
   marker.setMap(map);
-  findNearest();
-
-//Info windows
-var infowindow = new google.maps.InfoWindow();
-
-google.maps.event.addListener(stationMarker, 'click', function(){
-	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
-	request.send();
-});
-
-return marker;
-
-//Only add data if downloaded
-let windowContent = "<h1>" + stop.stop_name + ":" + "</h1>"; 
-       if(dataWasParsed) {
-         windowContent += "\ " + setUpJSONInfo(stop.stop_name);
-       } else {
-         windowContent += "Oops! Data unavailable. Try back later!";
-       }
-
-       infowindow.setContent(windowContent);
-       infowindow.open(map,stopMarker);
-     };
-  };
- }
-
+  return marker;
 }
+  //Info windows
+//   var infowindow = new google.maps.InfoWindow();
+//
+// google.maps.event.addListener(stationMarker, 'click', function(){
+// 	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
+// 	request.send();
+// });
 
 //
 //Getting T-Stops on the map
-let stationIcon = {
-	url: "station_icon.png",
-	scaledSie: new google.maps.Size(30,30),
+function getStationsOnMap(){
+  let stationIcon = {
+	  url: "station_icon.png",
+	  scaledSize: new google.maps.Size(30,30),
+  }
+
+  stations.forEach(function(station) {
+	  let stopLocation = new google.maps.LatLng(station.stop_lat, station.stop_long);
+	  let stationMarker = markerMaker(stopLocation, station.stop_name,stationIcon);
+    stationMarker.setMap(map);
+    stationMarker.setMap(map);
+    // allStationMarker.push(stationMarker);
+  });
+
+  addPolylines();
 }
+//
+//Only add data if downloaded
+// let windowContent = "<h1>" + stop.stop_name + ":" + "</h1>";
+//        if(dataWasParsed) {
+//          windowContent += "\ " + setUpJSONInfo(stop.stop_name);
+//        }
+//        else {
+//          windowContent += "Oops! Data unavailable. Try back later!";
+//        }
+//
+//        infowindow.setContent(windowContent);
+//        infowindow.open(map,stopMarker);
 
-stations.forEach((station) function(){
-	let stopLocation = new google.maps.LatLng(stop.stop_lat, stop.stop_long);
-	stationMarker = markerMaker(stoplocation, stop.stop_name,{stationIcon})
-});
-
-stationMarker.setMap(map);
-allStationMarkers.push(stationMarker);
-
-//
-//
-// //Get JSON data into my map
-// 	function loadStopTimes(){
-//
-// 	request = new XMLHttpRequest();
-// 	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
-// 	request.onreadystatechange = funex;
-// 	request.send();
-// }
-//
-//
-//
-// function funex(){
-// 	if (request.readyState == 4 && request.status == 200){
-// 		theData=request.responseText;
-// 		funex = JSON.parse(theData);
-// 		dataWasParsed = true; 
-// 		section = document.getElementById("map");
+// //
+// // //Get JSON data into my map
+// // 	function loadStopTimes(){
+// //
+// // 	request = new XMLHttpRequest();
+// // 	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
+// // 	request.onreadystatechange = funex;
+// // 	request.send();
+// // }
+// //
+// //
+// //
+// // function funex(){
+// // 	if (request.readyState == 4 && request.status == 200){
+// // 		theData=request.responseText;
+// // 		funex = JSON.parse(theData);
+// // 		dataWasParsed = true;
+// // 		section = document.getElementById("map");
+// //
+// // 	}
+// 	else{
+// 		dataWasParsed = false;
+//       	console.clear();
+//      	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
+//         request.send();
 //
 // 	}
-	else{
-		dataWasParsed = false;
-      	console.clear();
-     	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
-        request.send(); 
-
-	}
+// // }
+//
+// // map = new google.maps.Map(document.getElementById('map'), {
+// //   center: {lat: -34.397, lng: 150.644},
+// //   zoom: 12
+// // });
+//
+// //Next train schedule
+//
+// function JSONInfo(stopName){
+// 	let stopList=[]
+// 	parsedData.TripList.Trips.forEach((destinations) function(){
+// 		destinations.Predictions.forEach(function(prediction){
+// 			if (prediction.Stop==stopName){
+// 				stopList.push(prediction.Seconds);
+// 			}
+// 		});
+// 	});
+// 	return makeNearestString(stopList);
 // }
-
-// map = new google.maps.Map(document.getElementById('map'), {
-//   center: {lat: -34.397, lng: 150.644},
-//   zoom: 12
-// });
-
-//Next train schedule
-
-function JSONInfo(stopName){
-	let stopList=[]
-	parsedData.TripList.Trips.forEach((destinations) function(){
-		destinations.Predictions.forEach(function(prediction){
-			if (prediction.Stop==stopName){
-				stopList.push(prediction.Seconds);
-			}
-		});
-	});
-	return makeNearestString(stopList);
-}
-
-
-//Array to string conversion
-function makeNearestString(stopList){
-	//This was taken from W3schools api
-	stopList.sort((a,b) function(){return a-b});
-	let nextTrains = "<h2>Next Arrival (Minutes)</h2>";
-	if(stopList.length==0) nextTrains="No Arrivals Expected at this Stop";
-	stopList.forEach(function(time){
-		if(time>0 && time<60){
-			let timeInMinutes=(time/60).toFixed(2);
-			nextTrains+=""+timeInMinutes.toString();
-		}
-	});
-	return nextTrains;
-}
-
+//
+//
+// //Array to string conversion
+// function makeNearestString(stopList){
+// 	//This was taken from W3schools api
+// 	stopList.sort((a,b) function(){return a-b});
+// 	let nextTrains = "<h2>Next Arrival (Minutes)</h2>";
+// 	if(stopList.length==0) nextTrains="No Arrivals Expected at this Stop";
+// 	stopList.forEach(function(time){
+// 		if(time>0 && time<60){
+// 			let timeInMinutes=(time/60).toFixed(2);
+// 			nextTrains+=""+timeInMinutes.toString();
+// 		}
+// 	});
+// 	return nextTrains;
+// }
+//
 //Train Station Polylines
-function addPolylines(){
-	let line1 = getCoords(main);
-	part1 = new google.maps.Polyline({
-		path: line1,
-		strokeColor: '#ff0000',
-		strokeOpacity: 1.0,
-		strokeWeight: 2.75,
-	});
+function stationCoords(){
+  straightCoords = [];
+  splitRightCoords = [];
+  splitLeftCoords = [];
 
-	part1.setMap(map);
+  straight = [alewife, davis, porterSquare, harvardSquare, central, mit, mgh, parkStreet, crossing, southStation, broadway, andrew, jfk];
+  splitRight = [jfk, northQuincy, wollaston, quincyCenter, quincyAdams, braintree];
+  splitLeft = [jfk, savinHill,  fields, shawmut, ashmont];
 
-	let line2 = getCoords(forkright);
-	part2 = new google.maps.Polyline({
-		path: line2,
-		strokeColor: '#ff0000',
-		strokeOpacity: 1.0,
-		strokeWeight: 2.75,
-	});
 
-	part2.setMap(map);
-
-//Draw Polylines
-	myLine = new google.maps.Polyline({
-		line: [{lat:myLat, lng:myLong}, {lat: closestStop.stop_lat, lng:closestStop.stop_long}],
-		strokeColor: '#000000'
-		strokeOpacity: 1.0,
-		strokeWeight: 2.75,
-	});
-
-	myPath.setMap(map);
+  straight.forEach(function(station) {
+    let mapCoord = {lat: station.stop_lat , lng: station.stop_long};
+    straightCoords.push(mapCoord);
+  })
+  splitRight.forEach(function(station) {
+    let mapCoord = {lat: station.stop_lat , lng: station.stop_long};
+    splitRightCoords.push(mapCoord);
+  })
+  splitLeft.forEach(function(station) {
+    let mapCoord = {lat: station.stop_lat , lng: station.stop_long};
+    splitLeftCoords.push(mapCoord);
+  })
 }
 
-//Haversine Function - from Stack Overflow
+
+function addPolylines(){
+  stationCoords();
+
+	straightPoly = new google.maps.Polyline({
+		path: straightCoords,
+		strokeColor: '#ff0000',
+		strokeOpacity: 1.0,
+		strokeWeight: 3.75,
+	  });
+
+	straightPoly.setMap(map);
+
+  splitRightPoly = new google.maps.Polyline({
+    path: splitRightCoords,
+    strokeColor: '#ff0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 3.75,
+    });
+
+  splitRightPoly.setMap(map);
+
+  splitLeftPoly = new google.maps.Polyline({
+    path: splitLeftCoords,
+    strokeColor: '#ff0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 3.75,
+    });
+
+  splitLeftPoly.setMap(map);
+
+  findNearest();
+}
+
+//
+// //Haversine Function - from Stack Overflow
 function findNearest(){
-	coords1 = [myLong, myLat];
-	tStops.forEach(function(stop,index){
-		let coords2 = [stop.stop_long, stop.stop_lat];
-		let stopDist = haversineDistance(coords1, coords2, true);
+	userCoords = [userLat, userLong];
+	stations.forEach(function(station,index){
+		let stationCoords = [station.stop_long, station.stop_lat];
+		let stationDist = haversineDistance(stationCoords, userCoords, true);
 		if (index == 0){
-		closestDist = stopDist;
+		closestDist = stationDist;
 		}
-		if (stopDist<closestDist){
-			closestDist = stopDist;
-			closestStop = stop;
+		if (stationDist>closestDist){
+			closestDist = stationDist;
+			closestStation = station;
 		}
 	});
 
+  closestStation = new google.maps.Polyline({
+    path:[{lat:userLat, lng:userLong},{lat:closestStation.stop_lat, lng:closestStation.stop_long}],
+    strokeColor: '#000000',
+    strokeOpacity: 1.0,
+    strokeWeight: 3.75,
+  });
+  closestStation.setMap(map);
+}
+//
 function haversineDistance(coords1,coords2,isMiles){
 	Number.prototype.toRad=function(){
 		return this*Math.PI/180;
 	}
 
-	var lat2 = coords2[1];
-	var lon2 = coords2 [0];
-	var lat1 = coords1 [1];
-	var lon1 = coords1[0];
+	var lat2 = coords2[0];
+	var lon2 = coords2 [1];
+	var lat1 = coords1 [0];
+	var lon1 = coords1[1];
 //Distance in km
 	var R=6371;
 
@@ -253,19 +295,16 @@ function haversineDistance(coords1,coords2,isMiles){
   return d;
 }
 
-}
-}
-
-//Info Window Content
-let closestInfo="<div class=infoWindow"+
-"Closest Stop is:"+"<span class=important>"+
-closestDist.toFixed(3)+
-"</span>"+
-"path"+
-"</div>";
-var infowindow = new google.maps.InfoWindow();
-google.maps.event.addListener(personMarker, 'click', function(){
-	infowindow.setContent(closestInfo);
-	infowindow.open(map,personMarker);
-});
-
+//
+// //Info Window Content
+// let closestInfo="<div class=infoWindow"+
+// "Closest Stop is:"+"<span class=important>"+
+// closestDist.toFixed(3)+
+// "</span>"+
+// "path"+
+// "</div>";
+// var infowindow = new google.maps.InfoWindow();
+// google.maps.event.addListener(personMarker, 'click', function(){
+// 	infowindow.setContent(closestInfo);
+// 	infowindow.open(map,personMarker);
+// });
