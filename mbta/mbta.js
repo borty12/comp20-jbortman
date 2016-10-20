@@ -10,13 +10,13 @@ var stations;
  var andrew = {stop_name: "Andrew", stop_lat: 42.330154, stop_long: -71.057655};
  var porterSquare = {stop_name: "Porter Square", stop_lat: 42.3884, stop_long: -71.11914899999999};
  var harvardSquare = {stop_name: "Harvard Square", stop_lat: 42.373362, stop_long: -71.118956};
- var jfk = {stop_name: "JFK/UMASS", stop_lat: 42.320685, stop_long: -71.052391};
+ var jfk = {stop_name: "JFK/UMass", stop_lat: 42.320685, stop_long: -71.052391};
  var savinHill = {stop_name: "Savin Hill", stop_lat: 42.31129, stop_long: -71.053331};
  var parkStreet = {stop_name: "Park Street", stop_lat: 42.35639457, stop_long: -71.0624242};
  var broadway = {stop_name: "Broadway", stop_lat: 42.342622, stop_long: -71.056967};
  var northQuincy = {stop_name: "North Quincy", stop_lat: 42.275275, stop_long: -71.029583};
  var shawmut = {stop_name: "Shawmut", stop_lat: 42.29312583, stop_long: -71.06573796000001};
- var davis = {stop_name: "Davis Square", stop_lat: 42.39674, stop_long: -71.121815};
+ var davis = {stop_name: "Davis", stop_lat: 42.39674, stop_long: -71.121815};
  var alewife = {stop_name: "Alewife", stop_lat: 42.395428, stop_long: -71.142483};
  var mit = {stop_name: "Kendall/MIT", stop_lat: 42.36249079, stop_long: -71.08617653};
  var mgh = {stop_name: "Charles/MGH", stop_lat: 42.361166, stop_long: -71.070628};
@@ -126,7 +126,7 @@ function getPredictions(stopName){
 		train.Predictions.forEach(function(predictTime){
       if(predictTime.Stop == stopName){
         stationString += "<div>Destination: "+
-        train.Destination +" Next Train (seconds): " + predictTime.Seconds +"</div>";
+        train.Destination +" Train Arrival (seconds): " + predictTime.Seconds +"</div>";
       }
     });
 	});
