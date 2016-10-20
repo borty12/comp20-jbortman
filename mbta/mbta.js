@@ -45,9 +45,12 @@ function initMap(){
 	map = new google.maps.Map(document.getElementById('map'), MapSettings);
 	map.panTo(userLocation);
 
-  //request.onreadystatechange=parseHelp;
+  request = new XMLHttpRequest();
+  request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
+  request.onreadystatechange = funex;
+  request.send();
+
   userlocation();
-  // loadStopTimes();
 }
 
 // Finding my location on the map
@@ -69,13 +72,13 @@ function getMap(){
 	userlocation = new google.maps.LatLng(userLat, userLong);
 	map.panTo(userlocation);
 
-	userMarker = markerMaker(userlocation, "You are here",{url: "you_are_here.png", scaledSize: new google.maps.Size(50,50)});
+	userMarker = markerMaker(userlocation, "You are here",{url: "you_are_here.png", scaledSize: new google.maps.Size(50,50)},false);
 
   getStationsOnMap();
 }
 
 //Marker for my location
-function markerMaker(markerposition, markertitle, markericon){
+function markerMaker(markerposition, markertitle, markericon, isStop = true){
 	let marker = new google.maps.Marker({
 		position: markerposition,
 		title: markertitle,
@@ -84,21 +87,21 @@ function markerMaker(markerposition, markertitle, markericon){
 //Adds info windows to the stops
   let infowindow = new google.maps.InfoWindow();
   google.maps.event.addListener(marker, 'click', function(){
-    infowindow.setContent("Station Information:");
-  infowindow.open(map, marker);
-});
+    let stationInfo = "<h1>" + markertitle + ":" + "</h1>";
+    if(isStop){
+      loadStopTimes();
+      markerContent = getPredictions(marker.title);
+      stationInfo += markerContent;
+    }else{
+      stationInfo += "<div> Closest Stop: " + closestStation.stop_name + " "+ closestDist.toFixed(2) + " miles away</div>";
+    }
+    infowindow.setContent(stationInfo);
+    infowindow.open(map, marker);
+  });
   marker.setMap(map);
   return marker;
 }
-  //Info windows
-//   var infowindow = new google.maps.InfoWindow();
-//
-// google.maps.event.addListener(stationMarker, 'click', function(){
-// 	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
-// 	request.send();
-// });
 
-//
 //Getting T-Stops on the map
 function getStationsOnMap(){
   let stationIcon = {
@@ -110,61 +113,27 @@ function getStationsOnMap(){
 	  let stopLocation = new google.maps.LatLng(station.stop_lat, station.stop_long);
 	  let stationMarker = markerMaker(stopLocation, station.stop_name,stationIcon);
     stationMarker.setMap(map);
-    stationMarker.setMap(map);
-    // allStationMarker.push(stationMarker);
   });
 
   addPolylines();
 }
-//
-//Only add data if downloaded
-// let windowContent = "<h1>" + stop.stop_name + ":" + "</h1>";
-//        if(dataWasParsed) {
-//          windowContent += "\ " + setUpJSONInfo(stop.stop_name);
-//        }
-//        else {
-//          windowContent += "Oops! Data unavailable. Try back later!";
-//        }
-//
-//        infowindow.setContent(windowContent);
-//        infowindow.open(map,stopMarker);
 
-//
-// // map = new google.maps.Map(document.getElementById('map'), {
-// //   center: {lat: -34.397, lng: 150.644},
-// //   zoom: 12
-// // });
-//
 // //Next train schedule
-//
-// function JSONInfo(stopName){
-// 	let stopList=[]
-// 	parsedData.TripList.Trips.forEach((destinations) function(){
-// 		destinations.Predictions.forEach(function(prediction){
-// 			if (prediction.Stop==stopName){
-// 				stopList.push(prediction.Seconds);
-// 			}
-// 		});
-// 	});
-// 	return makeNearestString(stopList);
-// }
-//
-//
-// //Array to string conversion
-// function makeNearestString(stopList){
-// 	//This was taken from W3schools api
-// 	stopList.sort((a,b) function(){return a-b});
-// 	let nextTrains = "<h2>Next Arrival (Minutes)</h2>";
-// 	if(stopList.length==0) nextTrains="No Arrivals Expected at this Stop";
-// 	stopList.forEach(function(time){
-// 		if(time>0 && time<60){
-// 			let timeInMinutes=(time/60).toFixed(2);
-// 			nextTrains+=""+timeInMinutes.toString();
-// 		}
-// 	});
-// 	return nextTrains;
-// }
-//
+function getPredictions(stopName){
+  let stationString = "";
+
+	trainSchedule.TripList.Trips.forEach(function(train){
+		train.Predictions.forEach(function(predictTime){
+      if(predictTime.Stop == stopName){
+        stationString += "<div>Destination: "+
+        train.Destination +" Next Train (seconds): " + predictTime.Seconds +"</div>";
+      }
+    });
+	});
+	return stationString;
+}
+
+
 //Train Station Polylines
 function stationCoords(){
   straightCoords = [];
@@ -224,31 +193,31 @@ function addPolylines(){
   findNearest();
 }
 
-//
-// //Haversine Function - from Stack Overflow
 function findNearest(){
 	userCoords = [userLat, userLong];
 	stations.forEach(function(station,index){
-		let stationCoords = [station.stop_long, station.stop_lat];
+		let stationCoords = [station.stop_lat, station.stop_long];
 		let stationDist = haversineDistance(stationCoords, userCoords, true);
 		if (index == 0){
-		closestDist = stationDist;
+		    closestDist = stationDist;
+        closestStation = station;
 		}
-		if (stationDist>closestDist){
+		if (stationDist < closestDist){
 			closestDist = stationDist;
 			closestStation = station;
 		}
 	});
 
-  closestStation = new google.maps.Polyline({
+  closestStationLine = new google.maps.Polyline({
     path:[{lat:userLat, lng:userLong},{lat:closestStation.stop_lat, lng:closestStation.stop_long}],
     strokeColor: '#000000',
     strokeOpacity: 1.0,
     strokeWeight: 3.75,
   });
-  closestStation.setMap(map);
+  closestStationLine.setMap(map);
 }
-//
+
+// //Haversine Function - from Stack Overflow
 function haversineDistance(coords1,coords2,isMiles){
 	Number.prototype.toRad=function(){
 		return this*Math.PI/180;
@@ -274,34 +243,18 @@ function haversineDistance(coords1,coords2,isMiles){
   return d;
 }
 
-//Get JSON data into my map
-// 	function loadStopTimes(){
+// //Get JSON data into my map
+function loadStopTimes(){
+	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
+	request.send();
+}
 //
-// 	request = new XMLHttpRequest();
-// 	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
-// 	request.onreadystatechange = funex;
-// 	request.send();
-// }
-//
-// function funex(){
-// 	if (request.readyState == 4 && request.status == 200){
-// 		theData=request.responseText;
-// 		trainSchedule = JSON.parse(theData);
-// 	} else if (request.readyState == 4){
-//      	  request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
-//         request.send();
-// 	}
-// }
-//
-// //Info Window Content
-// let closestInfo="<div class=infoWindow"+
-// "Closest Stop is:"+"<span class=important>"+
-// closestDist.toFixed(3)+
-// "</span>"+
-// "path"+
-// "</div>";
-// var infowindow = new google.maps.InfoWindow();
-// google.maps.event.addListener(personMarker, 'click', function(){
-// 	infowindow.setContent(closestInfo);
-// 	infowindow.open(map,personMarker);
-// });
+function funex(){
+	if (request.readyState == 4 && request.status == 200){
+		theData = request.responseText;
+		trainSchedule = JSON.parse(theData);
+	} else if (request.readyState == 4){
+    //try again if failed
+    loadStopTimes();
+	}
+}
