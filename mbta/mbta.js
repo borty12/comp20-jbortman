@@ -4,6 +4,7 @@ var userLocation, map;
 var stationMarkers;
 var stations;
 
+
 // Making the different stops into objects
  var southStation = {stop_name: "South Station", stop_lat: 42.352271, stop_long: -71.05524200000001};
  var andrew = {stop_name: "Andrew", stop_lat: 42.330154, stop_long: -71.057655};
@@ -46,7 +47,7 @@ function initMap(){
 
   //request.onreadystatechange=parseHelp;
   userlocation();
-  loadStopTimes();
+  // loadStopTimes();
 }
 
 // Finding my location on the map
@@ -80,7 +81,12 @@ function markerMaker(markerposition, markertitle, markericon){
 		title: markertitle,
 		icon: markericon,
 	});
-
+//Adds info windows to the stops
+  let infowindow = new google.maps.InfoWindow();
+  google.maps.event.addListener(marker, 'click', function(){
+    infowindow.setContent("Station Information:");
+  infowindow.open(map, marker);
+});
   marker.setMap(map);
   return marker;
 }
@@ -269,23 +275,23 @@ function haversineDistance(coords1,coords2,isMiles){
 }
 
 //Get JSON data into my map
-	function loadStopTimes(){
-
-	request = new XMLHttpRequest();
-	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
-	request.onreadystatechange = funex;
-	request.send();
-}
-
-function funex(){
-	if (request.readyState == 4 && request.status == 200){
-		theData=request.responseText;
-		trainSchedule = JSON.parse(theData);
-	} else if (request.readyState == 4){
-     	  request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
-        request.send();
-	}
-}
+// 	function loadStopTimes(){
+//
+// 	request = new XMLHttpRequest();
+// 	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
+// 	request.onreadystatechange = funex;
+// 	request.send();
+// }
+//
+// function funex(){
+// 	if (request.readyState == 4 && request.status == 200){
+// 		theData=request.responseText;
+// 		trainSchedule = JSON.parse(theData);
+// 	} else if (request.readyState == 4){
+//      	  request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
+//         request.send();
+// 	}
+// }
 //
 // //Info Window Content
 // let closestInfo="<div class=infoWindow"+
