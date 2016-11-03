@@ -245,7 +245,7 @@ function haversineDistance(coords1,coords2,isMiles){
 
 // //Get JSON data into my map
 function loadStopTimes(){
-	request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
+	request.open("get", "https://creepy-coffin-69021.herokuapp.com/redline.json", true);
 	request.send();
 }
 //
