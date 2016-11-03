@@ -46,7 +46,7 @@ function initMap(){
 	map.panTo(userLocation);
 
   request = new XMLHttpRequest();
-  request.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
+  request.open("get", "https://creepy-coffin-69021.herokuapp.com/redline.json", true);
   request.onreadystatechange = funex;
   request.send();
 
