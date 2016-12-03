@@ -1,0 +1,34 @@
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>2048 Security Assessment - Jeff Bortman</title>
+	<link type="text/css" rel="stylesheet" href="security.css"/>
+</head>
+
+<body>
+	<div id = "title">
+		<h1>2048 Security Assessment</h1>
+		<h2>Jeff Bortman</h2>
+	</div>
+	<div id = "introduction">
+		<h3>Introduction</h3>
+		<p>"2048" is a gaming web application where the player is given a square 4x4 grid populated by two random tiles reading either "2" or "4". The player controls the game board by swiping in one of four directions which then moves all tiles to the selected direction. The game populates the board with a new random tile (either a 2 or a 4) with each swipe. The goal of the game is to combine tiles with the same number, resulting in a new tile with double the value. A player may win the game by combining enough tiles to create the infamous "2048" tile. A player loses the game when all 16 slots are filled with tiles with no adjacent same-number tials. Either a win or a loss will prompt the player to submit a username.</p> 
+		<p>The score and username, along with a timestamp and data about the final board appearance then gets stored to a database in MongoDB. When called upon, the database then returns two pages: the first sorts the data by high score and returns the username, score, and timestamp with the highest score at the top; the second parses the query string and returns data for a specific player in JSON format including the score, timestamp, and information on the final board appearance.</p>
+		<p>I have been hired to identify, describe, and suggest resolutions for any security issues that the game and corresponding database may have. I have been hired to do so since neither the game nor the database were designed by the creator, Sartrapat Poolvaraluck, with security in mind, yet it still stores valuable user information that must be protected.</p>
+	</div>
+
+	<div id = "methodology">
+		<h3>Methodology</h3>
+		<p>I began by connecting to Sartrapat's 2048 data storage database hosted on heroku <a href="https://secret-scrubland-77318.herokuapp.com/">located here</a> to test the code using "black box attacks." A "black box attack" is one where the hacker does not have access to the source code. Next, I reviewed Sartrapat's source code to look for any further vulnerabilities.</p>
+		<p>Tools used:
+		<ul>
+		<li></li>
+		<li></li>
+		</ul>
+		</p>
+	</div>
+
+	<div id = "abstract">
+		<h3>Abstract</h3>
+		<p>
