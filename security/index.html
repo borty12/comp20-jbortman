@@ -13,25 +13,25 @@
 	</div>
 	<div id = "introduction">
 		<h3>Introduction</h3>
-		<p>"2048" is a gaming web application where the player is given a square 4x4 grid populated by two random tiles reading either "2" or "4". The player controls the game board by swiping in one of four directions which then moves all tiles to the selected direction. The game populates the board with a new random tile (either a 2 or a 4) with each swipe. The goal of the game is to combine tiles with the same number, resulting in a new tile with double the value. A player may win the game by combining enough tiles to create the infamous "2048" tile. A player loses the game when all 16 slots are filled with tiles with no adjacent same-number tials. Either a win or a loss will prompt the player to submit a username.</p> 
-		<p>The score and username, along with a timestamp and data about the final board appearance then gets stored to a database in MongoDB. When called upon, the database then returns two pages: the first sorts the data by high score and returns the username, score, and timestamp with the highest score at the top; the second parses the query string and returns data for a specific player in JSON format including the score, timestamp, and information on the final board appearance.</p>
-		<p>I have been hired to identify, describe, and suggest resolutions for any security issues that the game and corresponding database may have. I have been hired to do so since neither the game nor the database were designed by the creator, Sartrapat Poolvaraluck, with security in mind, yet it still stores valuable user information that must be protected.</p>
+		<p>&#34;2048&#34; is a gaming web application where the player is given a square 4x4 grid populated by two random tiles reading either &#34;2&#34; or &#34;4&#34;. The player controls the game board by swiping in one of four directions which then moves all tiles to the selected direction. The game populates the board with a new random tile &#40;either a 2 or a 4&#41; with each swipe. The goal of the game is to combine tiles with the same number&#44; resulting in a new tile with double the value. A player may win the game by combining enough tiles to create the infamous &#34;2048&#34; tile. A player loses the game when all 16 slots are filled with tiles with no adjacent same-number tiles. Either a win or a loss will prompt the player to submit a username.</p> 
+		<p>The score and username&#44; along with a timestamp and data about the final board appearance then gets stored to a database in MongoDB. When called upon&#44; the database then returns two pages&#58; the first sorts the data by high score and returns the username&#44; score&#44; and timestamp with the highest score at the top; the second parses the query string and returns data for a specific player in JSON format including the score&#44; timestamp&#44; and information on the final board appearance.</p>
+		<p>I have been hired to identify&#44; describe&#44; and suggest resolutions for any security issues that the game and corresponding database may have. I have been hired to do so since neither the game nor the database were designed by the creator&#44; Sartrapat Poolvaraluck&#44; with security in mind&#44; yet it still stores valuable user information that must be protected.</p>
 	</div>
 
 	<div id = "methodology">
 		<h3>Methodology</h3>
-		<p>I began by connecting to Sartrapat's 2048 data storage database hosted on heroku <a href="https://secret-scrubland-77318.herokuapp.com/">located here</a> to test the code using "black box attacks." A "black box attack" is one where the hacker does not have access to the source code. Next, I reviewed Sartrapat's source code to look for any further vulnerabilities. In my code review I specifically sought out a few points of emphasis brought up in class as well as some issues that I encountered in my own code for the same game.</p>
+		<p>I began by connecting to Sartrapat&#39;s 2048 data storage database hosted on heroku <a href="https://secret-scrubland-77318.herokuapp.com/">located here</a> to test the code using &#34;black box attacks.&#34; A &#34;black box attack&#34; is one where the hacker does not have access to the source code. Next&#44; I reviewed Sartrapat&#39;s source code to look for any further vulnerabilities. In my code review I specifically sought out a few points of emphasis brought up in class as well as some issues that I encountered in my own code for the same game.</p>
 		
 	</div>
 
 	<div id = "abstract">
 		<h3>Abstract of Findings</h3>
-		<p>One of the largest overarching security issues that I found in Sartrapat's version of 2048 is the application's inability to check for malicious data entry. If the application had the ability to check and validate user input many of the issues that I found would be easily resolved.</p>
+		<p>One of the largest overarching security issues that I found in Sartrapat&#39;s version of 2048 is the application&#39;s inability to check for malicious data entry. If the application had the ability to check and validate user input many of the issues that I found would be easily resolved.</p>
 		<ul>
-		<li>Malicious Javascript Can Be Inserted</li>
+		<li>Malicious JavaScript Can Be Inserted</li>
 		<li>Blank Usernames Returned</li>
 		<li>Cross Origin Resource Sharing Allowed</li>
-		<li>Allows Non-Numerical Score Values</li>
+		<li>Allows Non&#8208;Numerical Score Values</li>
 		<li>No Length Limit in the Username Entry Box</li>
 		</ul>
 	</div>
@@ -40,64 +40,64 @@
 		<h3>Issues Found</h3>
 
 		<p>
-		<h4>Issue 1 - Malicious javascript can be inserted into the server when entered in place of a username</h4>
+		<h4>Issue 1 &#8208; Malicious JavaScript can be inserted into the server when entered in place of a username</h4>
 		<ul>
-		<li>Location: https://secret-scrubland-77318.herokuapp.com/</li>
-		<li>Severity of the issue: High - a hacker could potentially insert malicious data into the database by inserting a line of javascript into the username entry box. One should never trust user input.</li>
-		<li> Description: I found this issue when I first opened the heroku app while "black boxing" and noticed that the previously stored usernames returned by the server were stored as plain text. <img src="plain-text-ex.PNG" alt = "Usernames were stored as plain text"> Because of this I was able to insert my own javascript into the username box: <img src = "jeff-b-hacked-you.PNG" alt = "The js code I manually inserted into the username box"></li>
-		<li>Proof of vulnerability: When I checked https://secret-scrubland-77318.herokuapp.com/to see if my javascript could be returned by the server, this is what I received: <img src = "hacked-by-jeff.PNG" alt = "Proof of the javascript insertion in Heroku"></li>
-		<li>Resolution: You could strip out any angle brackets entered by the user in the username prompt and replace them with something that would prevent the server from reading it as javascript (any other character). You could also strip all special characters from the username prompt box which accomplishes the same goal as preventing javascript injections. <img src = "replace-carrots.PNG" alt = "Script on how to replace carrots"></li>
+		<li>Location&#58; https://secret-scrubland-77318.herokuapp.com/</li>
+		<li>Severity of the issue&#58; High &#8208; a hacker could potentially insert malicious data into the database by inserting a line of JavaScript into the username entry box. One should never trust user input.</li>
+		<li> Description&#58; I found this issue when I first opened the heroku app while "black boxing" and noticed that the previously stored usernames returned by the server were stored as plain text. <p><img src="plain-text-ex.PNG" alt = "Usernames were stored as plain text"></p> Because of this I was able to insert my own JavaScript into the username box&#58; <p><img src = "jeff-b-hacked-you.PNG" alt = "The js code I manually inserted into the username box"></p></li>
+		<li>Proof of vulnerability&#58; When I checked https://secret-scrubland-77318.herokuapp.com/ to see if my JavaScript could be returned by the server&#44; this is what I received&#58; <p><img src = "hacked-by-jeff.PNG" alt = "Proof of the JavaScript insertion in Heroku"></p></li>
+		<li>Resolution&#58; You could strip out any angle brackets entered by the user in the username prompt and replace them with something that would prevent the server from reading it as JavaScript &#40;any other character&#41;. You could also strip all special characters from the username prompt box which accomplishes the same goal as preventing JavaScript injections. <p><img src = "replace-carrots.PNG" alt = "Script on how to replace carrots"></p></li>
 		</ul>
 		</p>
 
 		<p>
-		<h4>Issue 2 - Blank usernames can be returned by the server</h4>
+		<h4>Issue 2 &#8208; Blank usernames can be returned by the server</h4>
 		<ul>
-		<li>Location: https://secret-scrubland-77318.herokuapp.com/</li>
-		<li>Severity of the issue: High - there should be core code that will check the validity of anything that gets sent to the server, never trust user input</li>
-		<li> Description: I found this issue when I first opened the heroku app while "black boxing" and noticed that the previously stored usernames returned by the server contained empty spaces where usernames should have been entered. <img src ="blank-usernames.PNG" alt = "Blank usernames were accepted by the server as acceptable username inputs"></li>
-		<li>Proof of Vulnerability: Sartrapat attempted to deal with this issue by inserting "anonymous" any time the username box was left without an entry. <img src ="core-code-anonymous.PNG" alt = "Core code attempts to check for null and replace with anonymous"> However Sartrapat checked for "null" which is an unfavorable practice in javascript, and thus some blank spaces were still inserted into the returned data.</li>
-		<li>Resolution: You could write code to run a check to be sure that the username entry is not defined. You could then make it so that the user must enter something in the username box in order for his score to be accepted. <img src = "username-not-blank.PNG" alt = "Code for checking that username is not undefined and a suggestion for how to prompt entry of some sort"></li>
+		<li>Location&#58; https://secret-scrubland-77318.herokuapp.com/</li>
+		<li>Severity of the issue&#58; High &#8208; there should be core code that will check the validity of anything that gets sent to the server&#44; never trust user input.</li>
+		<li> Description&#58; I found this issue when I first opened the heroku app while &#34;black boxing&#34; and noticed that the previously stored usernames returned by the server contained empty spaces where usernames should have been entered. <p><img src ="blank-usernames.PNG" alt = "Blank usernames were accepted by the server as acceptable username inputs"></p></li>
+		<li>Proof of Vulnerability&#58; Sartrapat attempted to deal with this issue by inserting &#34;anonymous&#34; any time the username box was left without an entry. <p><img src ="core-code-anonymous.PNG" alt = "Core code attempts to check for null and replace with anonymous"></p> However Sartrapat checked for &#34;null&#34; which is an unfavorable practice in JavaScript&#44; and thus some blank spaces were still inserted into the returned data.</li>
+		<li>Resolution&#58; You could write code to run a check to be sure that the username entry is not undefined. You could then make it so that the user must enter something in the username box in order for his score to be accepted. <p><img src = "username-not-blank.PNG" alt = "Code for checking that username is not undefined and a suggestion for how to prompt entry of some sort"></p></li>
 		</ul>
 		</p>
 
 		<p>
-		<h4>Issue 3 - Cross Origin Resource Sharing Allowed</h4>
+		<h4>Issue 3 &#8208; Cross Origin Resource Sharing Allowed</h4>
 		<ul>
-		<li>Location: Core code, index.js, lines 8-12.</li>
-		<li>Severity of the issue: Minor - Allowing cross origin resource sharing allows any domain to access the server response. In most cases cross origin resource sharing is a very severe security issue since restricted resources may be requested by an outside domain, thus revealing sensitive information. However in this case there is no sensitive information other than simple usernames and scores being stored and thus it is a minor issue.</li>
-		<li>Description: I found this issue when doing a core code review. In the core code the asterisk denotes universal access to the server response.</li>
-		<li>Proof of Vulnerability: <img src = "cross-origin-resource-sharing.PNG" alt = "Core code showing use of asterisk with CORS"></li>
-		<li>Resolution: This is a relatively simple fix - you could replace the asterisk with specific domains that should have access to the server information. This way it is not universal but rather controlled by Sartrapat.</li>
+		<li>Location&#58; Core code&#44; index.js&#44; lines 8&#8208;12.</li>
+		<li>Severity of the issue&#58; Minor &#8208; Allowing cross origin resource sharing allows any domain to access the server response. In most cases cross origin resource sharing is a very severe security issue since restricted resources may be requested by an outside domain&#44; thus revealing sensitive information. However in this case there is no sensitive information other than simple usernames and scores being stored and thus it is a minor issue.</li>
+		<li>Description&#58; I found this issue when doing a core code review. In the core code the asterisk denotes universal access to the server response.</li>
+		<li>Proof of Vulnerability&#58; <p><img src = "cross-origin-resource-sharing.PNG" alt = "Core code showing use of asterisk with CORS"></p></li>
+		<li>Resolution&#58; This is a relatively simple fix &#8208; you could replace the asterisk with specific domains that should have access to the server information. This way it is not universal but rather controlled by Sartrapat.</li>
 		</ul>
 		</p>
 
 		<p>
-		<h4>Issue 4 - Allows Non-Numerical Score Values</h4>
+		<h4>Issue 4 &#8208; Allows Non&#8208;Numerical Score Values</h4>
 		<ul>
-		<li>Location: https://secret-scrubland-77318.herokuapp.com/</li>
-		<li>Severity of the Issue: Minor - Allowing non-numerical scores to be sent to the server and then returned when requested is not catastrophic and will not pose any major security issues to the game since it is not user input. However, validating the data is never a bad idea to defend against basic breaches.</li>
-		<li>Description: I found this issue while doing a black box review of the data returned by the server when I noticed that some of the scores returned were "NaN." I also noticed a score of 33, which should be physically impossible to score in this game barring a forced quit.</li>
-		<li>Proof of Vulnerability: <img src = "non-numerical-scores.PNG" alt = "Non-numerical scores and the score of 33"></li>
-		<li>Resolution: You could fix this by adding a conditional in your javascript to ensure that the score value is a number. <img src = "send-numbers-only.PNG" alt = "Code for how to ensure that the data being sent is a valid number"</li>
+		<li>Location&#58; https://secret-scrubland-77318.herokuapp.com/</li>
+		<li>Severity of the Issue&#58; Minor &#8208; Allowing non&#8208;numerical scores to be sent to the server and then returned when requested is not catastrophic and will not pose any major security issues to the game since it is not user input. However&#44; validating the data is never a bad idea to defend against basic breaches.</li>
+		<li>Description&#58; I found this issue while doing a black box review of the data returned by the server when I noticed that some of the scores returned were &#34;NaN.&#34; I also noticed a score of 33&#44; which should be physically impossible to score in this game barring a forced quit.</li>
+		<li>Proof of Vulnerability&#58; <p><img src = "non-numerical-scores.PNG" alt = "Non-numerical scores and the score of 33"></p></li>
+		<li>Resolution&#58; You could fix this by adding a conditional in your JavaScript to ensure that the score value is a number. <p><img src = "send-numbers-only.PNG" alt = "Code for how to ensure that the data being sent is a valid number"></p></li>
 		</ul>
 		</p>
 
 		<p>
-		<h4>Issue 5 - No Length Limit in the Username Input Box</h4>
+		<h4>Issue 5 &#8208; No Length Limit in the Username Input Box</h4>
 		<ul>
-		<li>Location: Game username input box prompted after a loss</li>
-		<li>Severity of the Issue: Moderate - While this issue will not compromise any personal information, a hacker could fill the database with lots of data that will detract from the user experience when trying to view scores. This is also an issue because Sartrapat will end up getting billed by Heroku after too much usage.</li>
-		<li>Description: I found this issue while typing my name into the username box prompted after a loss. I was curious to see whether or not the box would cut me off after a certain number of characters and it did not.<img src = "no-character-limit.PNG" alt = "Proof of no character limit"></li>
-		<li>Proof of Vulnerability:</li>
-		<li>Resolution: This fix would check the length of the inputted username to cap it at a maximum value determined by Sartrapat (somewhere around 15 characters). <img src = "length-check.PNG" alt = "Code for how to perform a length check on the username input"></li>
+		<li>Location&#58; Game username input box prompted after a loss.</li>
+		<li>Severity of the Issue&#58; Moderate &#8208; While this issue will not compromise any personal information&#44; a hacker could fill the database with lots of data that will detract from the user experience when trying to view scores. This is also an issue because Sartrapat will end up getting billed by Heroku after too much usage.</li>
+		<li>Description&#58; I found this issue while typing my name into the username box prompted after a loss. I was curious to see whether or not the box would cut me off after a certain number of characters and it did not.<p><img src = "no-character-limit.PNG" alt = "Proof of no character limit"></p></li>
+		<li>Proof of Vulnerability&#58; <p><img src = "username-length.PNG" alt = "Proof of no character limt"></p></li>
+		<li>Resolution&#58; This fix would check the length of the inputted username to cap it at a maximum value determined by Sartrapat &#40;somewhere around 15 characters&#41;. <p><img src = "length-check.PNG" alt = "Code for how to perform a length check on the username input"></p></li>
 		</ul>
 		</p>
 		</div>
 
 		<div id = "conclusion">
 		<h3>Conclusion</h3>
-		<p>While Sartrapat did a great job implimenting the bare bones aspects of the assignment, there are many places where he could improve security to give the user a friendlier experience free from hackers and attacks. The largest take away that Sartrapat should take from this assignment is to never trust user input. As they say if you give a hacker an inch he will take a mile. It should be noted that most of the security issues discussed came from previously implimented breaches by Ming or otherwise. It was difficult for me to perform breaches of my own because Sartrapat discontinued hosting the game's server on heroku and thus I could not push through any information of my own and have it returned by the server until he figured out a solution in the last hour of the assingment.</p>
+		<p>While Sartrapat did a great job implementing the bare bones aspects of the assignment&#44; there are many places where he could improve security to give the user a friendlier experience free from hackers and attacks. The largest take away from this assignment is to never trust user input. As they say if you give a hacker an inch he will take a mile. It should be noted that most of the security issues discussed came from previously implemented breaches by Ming or otherwise. It was difficult for me to perform breaches of my own because Sartrapat discontinued hosting the game&#39;s server on heroku and thus I could not push through any information of my own and have it returned by the server until he figured out a solution in the last hour of the assignment.</p>
 		</div>
 
 
