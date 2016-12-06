@@ -30,5 +30,38 @@
 	</div>
 
 	<div id = "abstract">
-		<h3>Abstract</h3>
+		<h3>Abstract of Findings</h3>
+		<p>One of the largest overarching security issues that I found in Sartrapat's version of 2048 is the application's inability to check for malicious data entry. If the application had the ability to check and validate user input many of the issues that I found would be easily resolved.</p>
+	</div>
+
+	<div id = "issues-found">
+		<h3>Issues Found</h3>
+
 		<p>
+		<h4>Issue 1 - Malicious javascript can be inserted into the server when 
+		entered in place of a username</h4>
+		<ul>
+		<li>Location: https://secret-scrubland-77318.herokuapp.com/</li>
+		<li>Severity of the issue: High - a hacker could potentially insert malicious data into the database by inserting a line of javascript into the username entry box. One should never trust user input.</li>
+		<li> Description - I found this issue when I first opened the heroku app while "black boxing" and noticed that the previously stored usernames returned by the server were stored as plain text. <img src="plain-text-ex.PNG" alt = "Usernames were stored as plain text"> Because of this I was able to insert my own javascript into the username box: <img src = "js-box-insertion.PNG" alt = "The js code I manually inserted into the username box"></li>
+		<li>Proof of vulnerability - When I checked https://secret-scrubland-77318.herokuapp.com/to see if my javascript could be returned by the server, this is what I received: <img src = "js-server-insertion.PNG" alt = "Proof of the javascript insertion in Heroku"></li>
+		<li>Resolution - </li>
+		</ul>
+		</p>
+
+		<p>
+		<h4>Issue 2 - Blank usernames can be returned by the server</h4>
+		<ul>
+		<li>Location: https://secret-scrubland-77318.herokuapp.com/</li>
+		<li>Severity of the issue: High - there should be core code that will check the validity of anything that gets sent to the server, never trust user input</li>
+		<li> Description - I found this issue when I first opened the heroku app while "black boxing" and noticed that the previously stored usernames returned by the server contained empty spaces where usernames should have been entered. <img src "blank-usernames.PNG" alt = "Blank usernames were accepted by the server as acceptable username inputs"></li>
+		<li>Proof of Vulnerability - Sartrapat attempted to deal with this issue by inserting "anonymous" any time the username box was left without an entry. <img src "core-code-anonymous.PNG" alt = "Core code attempts to check for null and replace with anonymous"> However Sartrapat checked for "null" which is an unfavorable practice in javascript, and thus some blank spaces were still inserted into the returned data.</li>
+		<li>Resolution - </li>
+		</ul>
+		</p>
+
+		<p>
+
+
+
+
