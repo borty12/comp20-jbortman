@@ -15,7 +15,7 @@ I have grown immensely from day one in this course. I began as a beginner comput
 
 What was the most important thing that you learned in this course?
 
-The most important thing that I learned was perseverence. On many occassions my code simply was not doing as I wanted it to do but I had to stick with it to push through to the final project. Whether it be going to ask for a push from the TAs in Halligan or going to Ming to get simple things like the VM set up, using all of my resources along the journey was also important. For example, on the 2048 assignment I could not figure out why my heroku app was not updating upon submission, but with a small push from the Hallian TAs I was able to find the issue and correct it. I also had to persevere on the MBTA project, perusing the different web resources for hours to figure out how to use the Haversine function correctly. 
+The most important things that I learned were perseverance and how to ask for help. On many occasions  my code simply was not doing as I wanted it to do but I had to stick with it to push through to the final product. Whether it be going to ask for a push from the TAs in Halligan or going to Ming to get simple things like the VM set up, using all of my resources along the journey was also important. For example, on the 2048 assignment I could not figure out why my heroku app was not updating upon submission, but with a small push from the Halligan TAs I was able to find the issue and correct it. I also had to persevere on the MBTA project, perusing the different web resources for hours to figure out how to use the Haversine function correctly. 
 
 Now that you have finished the course, what topic would you like to delve deeper into?
 
